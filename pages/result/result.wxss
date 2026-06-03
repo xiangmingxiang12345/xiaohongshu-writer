@@ -1,0 +1,77 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  padding: 32rpx;
+  min-height: 100vh;
+}
+
+.card {
+  background: #fff;
+  border-radius: 24rpx;
+  padding: 36rpx;
+  box-shadow: 0 4rpx 20rpx rgba(0,0,0,0.04);
+  flex: 1;
+}
+
+.card-header {
+  margin-bottom: 32rpx;
+  padding-bottom: 24rpx;
+  border-bottom: 2rpx solid #f0f0f0;
+}
+
+.card-title {
+  display: block;
+  font-size: 34rpx;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 8rpx;
+}
+
+.card-subtitle {
+  display: block;
+  font-size: 26rpx;
+  color: #bbb;
+}
+
+.content-area {
+  line-height: 1.8;
+}
+
+.content-text {
+  font-size: 30rpx;
+  color: #444;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.actions {
+  margin-top: 40rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 24rpx;
+}
+
+.copy-btn {
+  height: 88rpx;
+  line-height: 88rpx;
+  border-radius: 44rpx;
+  font-size: 32rpx;
+  font-weight: 500;
+  background: linear-gradient(135deg, #FF6B6B, #FF4757) !important;
+  border: none !important;
+}
+
+.regenerate-btn {
+  height: 88rpx;
+  line-height: 88rpx;
+  border-radius: 44rpx;
+  font-size: 32rpx;
+  font-weight: 500;
+  background: transparent !important;
+  border: 2rpx solid #ddd !important;
+  color: #666 !important;
+}
+
+.regenerate-btn::after {
+  border: none;
+}

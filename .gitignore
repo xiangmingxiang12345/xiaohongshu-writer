@@ -1,0 +1,20 @@
+# Java
+target/
+*.class
+*.jar
+*.war
+
+# IDE
+.idea/
+*.iml
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Maven wrapper (Zeabur 会用自带 JDK，不用传)
+.mvn/
+
+# 小程序
+project.private.config.json

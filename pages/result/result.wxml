@@ -1,0 +1,21 @@
+<view class="container">
+  <view class="card">
+    <view class="card-header">
+      <text class="card-title">📝 {{sceneName || '内容'}}</text>
+      <text class="card-subtitle">可直接复制发布</text>
+    </view>
+
+    <view class="content-area">
+      <text class="content-text">{{content}}</text>
+    </view>
+  </view>
+
+  <view class="actions">
+    <button class="copy-btn" type="primary" bindtap="copyContent">
+      📋 复制全文
+    </button>
+    <button class="regenerate-btn" bindtap="goBack">
+      🔄 重新生成
+    </button>
+  </view>
+</view>

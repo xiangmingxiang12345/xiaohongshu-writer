@@ -1,0 +1,80 @@
+<view class="container">
+  <!-- 顶部 -->
+  <view class="header">
+    <text class="logo">✍️</text>
+    <text class="title">AI 内容工坊</text>
+    <text class="subtitle">选择场景，输入主题，一键生成</text>
+  </view>
+
+  <!-- 场景选择 -->
+  <view class="scene-section">
+    <text class="section-label">选择场景</text>
+    <view class="scene-grid">
+      <view
+        wx:for="{{scenes}}"
+        wx:key="type"
+        class="scene-card {{selectedScene === item.type ? 'active' : ''}}"
+        data-type="{{item.type}}"
+        bindtap="selectScene"
+      >
+        <text class="scene-icon">{{item.icon}}</text>
+        <text class="scene-name">{{item.name}}</text>
+        <text class="scene-desc">{{item.desc}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 输入区 -->
+  <view class="input-section" wx:if="{{selectedScene}}">
+    <view class="input-header">
+      <text class="section-label">输入主题</text>
+      <text class="placeholder-hint">{{placeholder}}</text>
+    </view>
+    <textarea
+      class="topic-input"
+      placeholder="{{placeholder}}"
+      maxlength="200"
+      value="{{topic}}"
+      bindinput="onTopicInput"
+      auto-height
+    />
+
+    <!-- 配图 -->
+    <view class="upload-area">
+      <view class="upload-btns">
+        <view class="upload-btn" bindtap="chooseFromAlbum">
+          <text class="upload-icon">🖼️</text>
+          <text class="upload-text">相册</text>
+        </view>
+        <view class="upload-btn" bindtap="takePhoto">
+          <text class="upload-icon">📷</text>
+          <text class="upload-text">拍照</text>
+        </view>
+      </view>
+      <text class="upload-hint" wx:if="{{images.length > 0}}">已选 {{images.length}} 张，点击 × 删除</text>
+      <view class="image-preview" wx:if="{{images.length > 0}}">
+        <view wx:for="{{images}}" wx:key="index" class="preview-item">
+          <image class="preview-img" src="{{item}}" mode="aspectFill" />
+          <view class="delete-btn" data-index="{{index}}" bindtap="removeImage">
+            <text class="delete-icon">×</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 生成按钮 -->
+    <button
+      class="generate-btn {{!canGenerate ? 'disabled' : ''}}"
+      type="primary"
+      loading="{{loading}}"
+      disabled="{{!canGenerate}}"
+      bindtap="generate"
+    >
+      {{loading ? 'AI 正在构思...' : '✨ 一键生成' + sceneName}}
+    </button>
+  </view>
+
+  <view class="footer">
+    <text class="footer-text">无需注册，即开即用</text>
+  </view>
+</view>
