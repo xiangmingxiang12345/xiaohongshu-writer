@@ -6,26 +6,56 @@
     <text class="subtitle">选择场景，输入主题，一键生成</text>
   </view>
 
-  <!-- 场景选择 -->
+  <!-- 场景选择（3列网格，6个以上可滚动） -->
   <view class="scene-section">
-    <text class="section-label">选择场景</text>
-    <view class="scene-grid">
-      <view
-        wx:for="{{scenes}}"
-        wx:key="type"
-        class="scene-card {{selectedScene === item.type ? 'active' : ''}}"
-        data-type="{{item.type}}"
-        bindtap="selectScene"
-      >
-        <text class="scene-icon">{{item.icon}}</text>
-        <text class="scene-name">{{item.name}}</text>
-        <text class="scene-desc">{{item.desc}}</text>
+    <view class="scene-header">
+      <view class="scene-header-left">
+        <text class="section-label">选择场景</text>
+        <text class="scene-selected-tag" wx:if="{{selectedScene}}">{{sceneName}}</text>
+      </view>
+      <text class="scene-scroll-hint" wx:if="{{scenes.length > 6}}">更多 ▼</text>
+    </view>
+    <scroll-view class="scene-grid-scroll" scroll-y enhanced show-scrollbar="{{false}}">
+      <view class="scene-grid">
+        <view
+          wx:for="{{scenes}}"
+          wx:key="type"
+          class="scene-card {{selectedScene === item.type ? 'active' : ''}}"
+          data-type="{{item.type}}"
+          bindtap="selectScene"
+        >
+          <text class="scene-icon">{{item.icon}}</text>
+          <text class="scene-name">{{item.name}}</text>
+        </view>
+      </view>
+    </scroll-view>
+  </view>
+
+  <!-- 配图 -->
+  <view class="upload-area">
+    <view class="upload-btns">
+      <view class="upload-btn" bindtap="chooseFromAlbum">
+        <text class="upload-icon">🖼️</text>
+        <text class="upload-text">相册</text>
+      </view>
+      <view class="upload-btn" bindtap="takePhoto">
+        <text class="upload-icon">📷</text>
+        <text class="upload-text">拍照</text>
+      </view>
+    </view>
+    <text class="upload-hint" wx:if="{{images.length > 0}}">已选 {{images.length}} 张，点击 × 删除</text>
+    <view class="image-preview" wx:if="{{images.length > 0}}">
+      <view wx:for="{{images}}" wx:key="index" class="preview-item">
+        <image class="preview-img" src="{{item}}" mode="aspectFill" />
+        <view class="delete-btn" data-index="{{index}}" bindtap="removeImage">
+          <text class="delete-icon">×</text>
+        </view>
       </view>
     </view>
   </view>
 
-  <!-- 输入区 -->
-  <view class="input-section" wx:if="{{selectedScene}}">
+  <!-- 输入区：常规文案 -->
+  <view class="input-section" wx:if="{{selectedScene !== 'mortgage'}}">
     <view class="input-header">
       <text class="section-label">输入主题</text>
       <text class="placeholder-hint">{{placeholder}}</text>
@@ -39,38 +69,63 @@
       auto-height
     />
 
-    <!-- 配图 -->
-    <view class="upload-area">
-      <view class="upload-btns">
-        <view class="upload-btn" bindtap="chooseFromAlbum">
-          <text class="upload-icon">🖼️</text>
-          <text class="upload-text">相册</text>
-        </view>
-        <view class="upload-btn" bindtap="takePhoto">
-          <text class="upload-icon">📷</text>
-          <text class="upload-text">拍照</text>
-        </view>
-      </view>
-      <text class="upload-hint" wx:if="{{images.length > 0}}">已选 {{images.length}} 张，点击 × 删除</text>
-      <view class="image-preview" wx:if="{{images.length > 0}}">
-        <view wx:for="{{images}}" wx:key="index" class="preview-item">
-          <image class="preview-img" src="{{item}}" mode="aspectFill" />
-          <view class="delete-btn" data-index="{{index}}" bindtap="removeImage">
-            <text class="delete-icon">×</text>
-          </view>
-        </view>
-      </view>
-    </view>
-
-    <!-- 生成按钮 -->
     <button
-      class="generate-btn {{!canGenerate ? 'disabled' : ''}}"
+      class="generate-btn"
       type="primary"
       loading="{{loading}}"
-      disabled="{{!canGenerate}}"
+      disabled="{{!topic || loading}}"
       bindtap="generate"
     >
       {{loading ? 'AI 正在构思...' : '✨ 一键生成' + sceneName}}
+    </button>
+  </view>
+
+  <!-- 输入区：房贷计算器 -->
+  <view class="input-section" wx:if="{{selectedScene === 'mortgage'}}">
+    <view class="input-header">
+      <text class="section-label">房贷计算器</text>
+      <text class="placeholder-hint">等额本息 / 等额本金</text>
+    </view>
+
+    <view class="calc-group">
+      <view class="calc-row">
+        <text class="calc-label">贷款总额</text>
+        <view class="calc-input-wrap">
+          <input class="calc-input" type="digit" value="{{mortgageAmount}}" data-field="mortgageAmount" bindinput="onMortgageInput" />
+          <text class="calc-unit">万元</text>
+        </view>
+      </view>
+      <view class="calc-row">
+        <text class="calc-label">年利率</text>
+        <view class="calc-input-wrap">
+          <input class="calc-input" type="digit" value="{{mortgageRate}}" data-field="mortgageRate" bindinput="onMortgageInput" />
+          <text class="calc-unit">%</text>
+        </view>
+      </view>
+      <view class="calc-row">
+        <text class="calc-label">贷款年限</text>
+        <view class="calc-input-wrap">
+          <input class="calc-input" type="digit" value="{{mortgageYears}}" data-field="mortgageYears" bindinput="onMortgageInput" />
+          <text class="calc-unit">年</text>
+        </view>
+      </view>
+      <view class="calc-row">
+        <text class="calc-label">还款方式</text>
+        <picker bindchange="onMortgageTypeChange" value="{{mortgageType === 'debj' ? 1 : 0}}" range="{{['等额本息', '等额本金']}}">
+          <view class="calc-picker">
+            <text>{{mortgageType === 'debx' ? '等额本息' : '等额本金'}}</text>
+            <text class="calc-picker-arrow">▼</text>
+          </view>
+        </picker>
+      </view>
+    </view>
+
+    <button
+      class="generate-btn"
+      type="primary"
+      bindtap="generate"
+    >
+      🧮 开始计算
     </button>
   </view>
 
